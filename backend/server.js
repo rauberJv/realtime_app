@@ -2,12 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { WebSocketServer } = require('ws');
+const { mockData: initialExperiments } = require('./utils/mock');
 const app = express();
 const PORT = process.env.PORT || 3000;
-let experiments = [
-    { id: "exp1", name: "Button Color Test", visitors: 1000, conversions: 120, revenue: 500 },
-    { id: "exp2", name: "Headline A/B Test", visitors: 800, conversions: 90, revenue: 350 }
-];
 
 app.use(express.json());
 app.use(cors());
@@ -48,6 +45,8 @@ const server = app.listen(PORT, () => {
 
 const wss = new WebSocketServer({ server });
 
+let experiments = [...initialExperiments];
+
 function broadcastExperiments() {
     const message = JSON.stringify({ type: "update", data: experiments });
     for (const client of clients) {
@@ -59,12 +58,28 @@ function broadcastExperiments() {
 
 const UPDATE_INTERVAL = 5000;
 setInterval(() => {
-    experiments = experiments.map((exp) => ({
-        ...exp,
-        visitors: exp.visitors + Math.floor(Math.random() * 50),
-        conversions: exp.conversions + Math.floor(Math.random() * 5),
-        revenue: exp.revenue + Math.floor(Math.random() * 20)
-    }));
+    experiments = experiments.map((exp) => {
+        const [variant1, variant2] = exp.variants.map(v => 
+            v.name.replace(/\s+/g, '').charAt(0).toLowerCase() + v.name.replace(/\s+/g, '').slice(1)
+        );
+
+        return {
+            ...exp,
+            liveUpdates: [...exp.liveUpdates, {
+                timestamp: new Date().toISOString(),
+                [variant1]: {
+                    visitors: Math.floor(Math.random() * 50),
+                    conversions: Math.floor(Math.random() * 5),
+                    revenue: Math.floor(Math.random() * 20)
+                },
+                [variant2]: {
+                    visitors: Math.floor(Math.random() * 50),
+                    conversions: Math.floor(Math.random() * 5),
+                    revenue: Math.floor(Math.random() * 20)
+                }
+            }]
+        };
+    });
     broadcastExperiments();
 }, UPDATE_INTERVAL);
 
