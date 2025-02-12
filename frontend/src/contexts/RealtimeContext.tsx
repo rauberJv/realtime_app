@@ -1,9 +1,8 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { WebsocketResponseDTO } from '../services/websocket';
-
+import { wsService } from '../services/websocket';
 interface RealtimeData {
   data: WebsocketResponseDTO | null,
-  loading: boolean,
   error: string | null,
   lastUpdated: Date | null,
 }
@@ -13,10 +12,33 @@ const ApiContext = createContext<RealtimeData | undefined>(undefined);
 export function RealtimeProvider({ children }: { children: ReactNode }) {
   const [realtimeData, setRealtimeData] = useState<RealtimeData>({
     data: null,
-    loading: false,
     error: null,
     lastUpdated: null,
   })
+
+  useEffect(() => {
+    wsService.setErrorHandler((error) => {
+      setRealtimeData(prev => ({
+        ...prev,
+        error
+      }));
+    });
+
+    wsService.setDataHandler((data) => {
+      setRealtimeData(prev => ({
+        ...prev,
+        data,
+        lastUpdated: new Date(),
+        error: null
+      }));
+    });
+
+    wsService.connect();
+
+    return () => {
+      wsService.disconnect();
+    };
+  }, []);
 
   return (
     <ApiContext.Provider value={realtimeData}>

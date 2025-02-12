@@ -8,6 +8,16 @@ export interface WebsocketResponseDTO {
 class WebSocketService {
   private ws: WebSocket | null = null;
   private readonly url = 'ws://localhost:3000';
+  private onError?: (error: string) => void;
+  private onData?: (data: WebsocketResponseDTO) => void;
+
+  setErrorHandler(handler: (error: string) => void) {
+    this.onError = handler;
+  }
+
+  setDataHandler(handler: (data: WebsocketResponseDTO) => void) {
+    this.onData = handler;
+  }
 
   connect() {
     this.ws = new WebSocket(this.url);
@@ -19,14 +29,17 @@ class WebSocketService {
     this.ws.onmessage = (event) => {
       const data: WebsocketResponseDTO = JSON.parse(event.data);
       console.log(data);
+      this.onData?.(data);
     };
 
     this.ws.onerror = (error) => {
       console.error('WebSocket error:', error);
+      this.onError?.('WebSocket connection error');
     };
 
     this.ws.onclose = () => {
       console.log('Disconnected from WebSocket');
+      this.onError?.('WebSocket connection closed');
     };
   }
 
