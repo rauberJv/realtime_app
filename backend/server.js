@@ -24,7 +24,7 @@ app.get("/api/experiments/live", asyncHandler(async (req, res) => {
 }));
 
 app.get("/api/experiments/:id/metrics", asyncHandler(async (req, res) => {
-    const experiment = experiments.find(exp => exp.id === req.params.id);
+    const experiment = experiments.find(exp => exp.experimentId === req.params.id);
     if (!experiment) {
         return res.status(404).json({ error: "Experiment not found" });
     }
