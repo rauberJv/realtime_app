@@ -12,8 +12,8 @@ const ChartPanel: React.FC<ChartPanelProps> = ({ experimentId }) => {
     return (
         <div className="flex flex-col w-full gap-y-4">
             <div>
-                <h2 className="text-2xl font-bold">Charts Panel</h2>
-                <p>Selected Experiment: {experimentLabel}</p>
+                <h2 className="text-2xl font-bold">Live Charts Panel</h2>
+                <p className="text-lg">View unique informations about your experiments in <b>realtime</b>. Navigate through our BarChart and TimeScaleChart</p>
             </div>
             <div className="grid grid-cols-12 w-full gap-8">
                 <div className="col-span-12 lg:col-span-6">

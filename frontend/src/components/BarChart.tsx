@@ -6,8 +6,9 @@ import {
     BarElement,
     Title,
     Tooltip,
-    Legend
-} from "chart.js"
+    Legend,
+    ChartOptions
+} from "chart.js";
 import {ExperimentDTO} from "../services/experiments/dto";
 import { BarChartDefinition, barChart as generateBarChartData} from "../utils/chart"
 import {useEffect, useState} from "preact/hooks";
@@ -21,22 +22,39 @@ ChartJS.register(
 );
 
 interface BarChartProps {
-    experiments: ExperimentDTO[] | null,
+    experiments: ExperimentDTO[] | null;
 }
 
 const BarChart: React.FC<BarChartProps> = ({ experiments }) => {
-    const options = {};
+    const options: ChartOptions<'bar'> = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top' as const,
+            },
+            title: {
+                display: true,
+                text: 'General Experiment Results',
+                font: {
+                    size: 16,
+                }
+            }
+        },
+    };
+
     const [data, setData] = useState<BarChartDefinition | null>(null);
 
     useEffect(() => {
-        if (experiments) setData(generateBarChartData(experiments))
+        if (experiments) {
+            setData(generateBarChartData(experiments));
+        }
     }, [experiments]);
 
     return (
-        <>
-        { data ? <Bar options={options} data={data ?? {}} /> : "carregando"}
-        </>    
-    )
+        <div className="w-full h-full">
+            {data ? <Bar options={options} data={data} /> : "Loading..."}
+        </div>
+    );
 }
 
 export default BarChart;

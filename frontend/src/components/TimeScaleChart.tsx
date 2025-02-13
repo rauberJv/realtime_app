@@ -9,7 +9,8 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    ChartOptions
 } from "chart.js"
 interface TimeScaleProps {
     experiment: ExperimentDTO
@@ -24,11 +25,25 @@ ChartJS.register(
     Legend,
 );
 const TimeScaleChart: React.FC<TimeScaleProps> = ({ experiment }) => {
+    const options: ChartOptions<'line'> = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top' as const
+            },
+            title: {
+                display: true,
+                text: `${experiment.experimentId} results`,
+                font: {
+                    size: 16
+                }
+            }
+        }
+    }
     const data = timeScaleChart(experiment);
     return (
         <div className="w-full h-full">
-            <h2 className="text-lg font-bold">Experiment {experiment.experimentId}</h2>
-            <Line data={data} />
+            <Line data={data} options={options}/>
         </div>
     )
 }
