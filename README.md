@@ -71,14 +71,14 @@ By default, the frontend runs on `http://localhost:5173` and the backend on `htt
 
 You can configure environment variables for both frontend and backend in `.env` files.
 
-**Example for Backend (**``**):**
+**Example for Backend (`.env`):**
 
 ```
 PORT=3000
 DATABASE_URL=mongodb://localhost:27017/realtime_db
 ```
 
-**Example for Frontend (**``**):**
+**Example for Frontend (`.env`):**
 
 ```
 VITE_API_URL=http://localhost:3000
@@ -102,6 +102,19 @@ VITE_API_URL=http://localhost:3000
 - Implement a hybrid storage solution, utilizing a time-series database for real-time data and a relational or NoSQL database for long-term storage.
 - Enhance API flexibility to support dynamic data queries and filtering.
 - Improve security and authentication to ensure data integrity and controlled access.
+
+## 🏗️ Architecture Decisions
+
+### Frontend
+- **Chart.js over D3.js**: Selected for its ease of use, performance, and smaller footprint. Chart.js provides sufficient flexibility for this project while avoiding the steep learning curve and complexity of D3.js.
+- **React Context for state management**: A lightweight and performant alternative to Redux or other state management libraries. It ensures efficient state updates without unnecessary re-renders while keeping the application simple and scalable.
+- **Vite + Preact over Next.js**: Since server-side rendering was not required, Vite + Preact was chosen for its blazing-fast build times, optimized performance, and smaller bundle size, resulting in a highly responsive user experience.
+- **Native Fetch API over Axios**: The Fetch API natively supports modern JavaScript and provides all the required functionality without introducing additional dependencies, making the application leaner and more maintainable.
+- **Component-based architecture**: Components are designed to be reusable and agnostic, ensuring high modularity. Only real-time data is stored in Context to avoid prop drilling and enhance maintainability while minimizing unnecessary state updates.
+
+### Backend
+- **Express.js over heavier frameworks**: Opting for plain Express.js ensures flexibility and better control over request handling while avoiding the overhead associated with full-fledged frameworks like NestJS. This decision keeps the backend lightweight, scalable, and easy to maintain.
+- **REST API with real-time data handling**: The backend is designed to efficiently serve real-time metrics while maintaining a clean, scalable structure. A simple REST API is sufficient for most queries, while real-time updates are handled efficiently via WebSockets or polling strategies.
 
 ## 🤝 Contributing
 
