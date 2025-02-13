@@ -56,4 +56,82 @@ const barChart = (experiments: ExperimentDTO[]): BarChartDefinition | null => {
     return chartData;
 };
 
-export { barChart }
+export interface TimeScaleChartDefinition {
+    labels: string[],
+    datasets: {
+        label: string,
+        data: number[],
+        backgroundColor: string,
+        borderColor: string,
+        borderWidth: number,
+        tension: number
+    }[]
+}
+
+const timeScaleChart = (experiment: ExperimentDTO): TimeScaleChartDefinition | null => {
+    if (!experiment || !experiment.liveUpdates.length) return null;
+
+    const recentUpdates = experiment.liveUpdates.slice(-10);
+    let labels = recentUpdates.map(update => update.timestamp);
+    labels = labels.map(label => {
+        const dateObject = new Date(label);
+        return `${dateObject.getHours()}h${dateObject.getMinutes()}m${dateObject.getSeconds()}s`
+    })
+    const chartData = {
+        labels,
+        datasets: [
+            {
+                label: 'Control Visitors',
+                data: recentUpdates.map(update => update.control.visitors),
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                borderColor: 'rgb(0, 0, 0)',
+                borderWidth: 2,
+                tension: 0.4
+            },
+            {
+                label: 'Control Conversions',
+                data: recentUpdates.map(update => update.control.conversions),
+                backgroundColor: 'rgba(0, 11, 109, 0.1)',
+                borderColor: 'rgb(0, 11, 109)',
+                borderWidth: 2,
+                tension: 0.4
+            },
+            {
+                label: 'Control Revenue',
+                data: recentUpdates.map(update => update.control.revenue),
+                backgroundColor: 'rgba(87, 87, 87, 0.1)',
+                borderColor: 'rgb(87, 87, 87)',
+                borderWidth: 2,
+                tension: 0.4
+            },
+            {
+                label: 'Variant B Visitors',
+                data: recentUpdates.map(update => update.variantB.visitors),
+                backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                borderColor: 'rgb(54, 162, 235)',
+                borderWidth: 2,
+                tension: 0.4
+            },
+            {
+                label: 'Variant B Conversions',
+                data: recentUpdates.map(update => update.variantB.conversions),
+                backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 2,
+                tension: 0.4
+            },
+            {
+                label: 'Variant B Revenue',
+                data: recentUpdates.map(update => update.variantB.revenue),
+                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 2,
+                tension: 0.4
+            }
+        ]
+    };
+
+    return chartData;
+};
+
+export { barChart, timeScaleChart }

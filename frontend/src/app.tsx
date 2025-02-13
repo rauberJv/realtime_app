@@ -6,7 +6,7 @@ export function App() {
   return (
     <>
       <Header />
-      <div className="flex flex-col p-4">
+      <div className="flex flex-col p-4 gap-y-8">
         <MetricsPanel experimentId={null}/>
         <ChartPanel experimentId={null} />
       </div>
