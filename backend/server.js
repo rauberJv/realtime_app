@@ -59,20 +59,16 @@ function broadcastExperiments() {
 const UPDATE_INTERVAL = 5000;
 setInterval(() => {
     experiments = experiments.map((exp) => {
-        const [variant1, variant2] = exp.variants.map(v => 
-            v.name.replace(/\s+/g, '').charAt(0).toLowerCase() + v.name.replace(/\s+/g, '').slice(1)
-        );
-
         return {
             ...exp,
             liveUpdates: [...exp.liveUpdates, {
                 timestamp: new Date().toISOString(),
-                [variant1]: {
+                control: {
                     visitors: Math.floor(Math.random() * 50),
                     conversions: Math.floor(Math.random() * 5),
                     revenue: Math.floor(Math.random() * 20)
                 },
-                [variant2]: {
+                variantB: {
                     visitors: Math.floor(Math.random() * 50),
                     conversions: Math.floor(Math.random() * 5),
                     revenue: Math.floor(Math.random() * 20)

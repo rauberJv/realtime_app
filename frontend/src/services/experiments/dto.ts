@@ -13,7 +13,8 @@ interface VariantMetrics {
 
 export interface ExperimentLiveUpdate {
 	timestamp: string;
-	[variantKey: string]: VariantMetrics | string;
+	control: VariantMetrics;
+	variantB: VariantMetrics;
 }
 
 export interface ExperimentDTO {

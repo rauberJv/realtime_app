@@ -34,13 +34,13 @@ const experiment_02 = {
     experimentId: "exp_live_002",
     variants: [
         {
-            name: "Variant A",
+            name: "Control",
             visitors: 1000,
             conversions: 120,
             revenue: 500
         },
         {
-            name: "Variant C",
+            name: "Variant B",
             visitors: 800,
             conversions: 90,
             revenue: 350
@@ -49,12 +49,12 @@ const experiment_02 = {
     liveUpdates: [
         {
             timestamp: "2024-12-27T14:00:00Z",
-            variantA: {
+            control: {
                 visitors: 20,
                 conversions: 5,
                 revenue: 100
             },
-            variantC: {
+            variantB: {
                 visitors: 22,
                 conversions: 6,
                 revenue: 120
